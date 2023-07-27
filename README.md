@@ -1,1 +1,3 @@
-# in-stars-we-met
+# in stars, we met
+
+WIP game
