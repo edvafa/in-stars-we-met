@@ -1,20 +1,41 @@
-#include "raylib.h"
+#include "data.h"
 
-int main()
+#include <dlfcn.h>
+#include <raylib.h>
+#include <stddef.h>
+#include <stdio.h>
+
+void *handle;
+void (*init)(Data *);
+void (*update)(Data *);
+
+void reload_game()
 {
-    InitWindow(800, 480, "in stars, we met");
-    SetTargetFPS(60);
+    if (handle != NULL)
+        dlclose(handle);
+    handle = dlopen("lib.so", RTLD_NOW);
 
+    init = dlsym(handle, "init");
+    update = dlsym(handle, "update");
+
+    puts("LIB reloaded!");
+}
+
+int main(int argc, char **argv)
+{
+    reload_game();
+
+    struct Data data = {.player_position = {20, 20}, .player_velocity = 2.0f};
+    init(&data);
     while (!WindowShouldClose())
     {
-        BeginDrawing();
+        update(&data);
 
-        ClearBackground(DARKGRAY);
-
-        EndDrawing();
+        if (IsKeyPressed(KEY_R))
+            reload_game();
     }
 
+    dlclose(handle);
     CloseWindow();
-
     return 0;
 }
