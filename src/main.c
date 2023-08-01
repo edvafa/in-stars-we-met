@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 {
     reload_game();
 
-    struct Data data = {.player_position = {20, 20}, .player_velocity = 2.0f};
+    struct Data data = {0};
     init(&data);
     while (!WindowShouldClose())
     {
